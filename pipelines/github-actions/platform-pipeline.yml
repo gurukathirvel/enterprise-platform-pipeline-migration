@@ -1,0 +1,20 @@
+name: Platform Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run Checkov
+        run: checkov -d terraform/
+
+  deploy:
+    needs: security
+    runs-on: ubuntu-latest
+    steps:
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
